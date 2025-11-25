@@ -16,7 +16,7 @@ const sarabun = Sarabun({
 });
 
 export const metadata: Metadata = {
-  title: 'Sisaket Charity - ร่วมเป็นส่วนหนึ่งในการให้',
+  title: 'Sisaket Shirt',
   description: 'สั่งจองเสื้อที่ระลึก 243 ปี จังหวัดศรีสะเกษ',
 };
 
