@@ -51,31 +51,29 @@ export const authOptions: AuthOptions = {
       }
     })
   ],
-  pages: {
-    signIn: '/auth/login', 
-  },
   callbacks: {
     async jwt({ token, user }: any) {
       if (user) {
-        token.role = user.role;
         token.id = user.id;
+        token.role = user.role;
         token.accessToken = user.accessToken;
       }
       return token;
     },
     async session({ session, token }: any) {
       if (session.user) {
-        // @ts-ignore
-        session.user.role = token.role;
-        // @ts-ignore
         session.user.id = token.id;
+        session.user.role = token.role;
         // @ts-ignore
         session.accessToken = token.accessToken;
       }
       return session;
     }
   },
-  session: { strategy: "jwt" },
+  pages: {
+    signIn: '/auth/login', 
+  },
+  session: { strategy: "jwt", maxAge: 30 * 24 * 60 * 60, },
   secret: process.env.NEXTAUTH_SECRET,
 };
 
