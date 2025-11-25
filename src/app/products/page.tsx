@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import ProductsView from '@/components/ProductsView';
 import API_ENDPOINTS from '@/lib/api';
 import { Product } from '@/types';
@@ -17,6 +18,12 @@ export default async function ProductsPage() {
   const products = await getProducts();
 
   return (
-      <ProductsView initialProducts={products} />
+    <Suspense fallback={
+        <div className="d-flex justify-content-center align-items-center" style={{minHeight: '80vh'}}>
+            Loading Products...
+        </div>
+    }>
+        <ProductsView initialProducts={products} />
+    </Suspense>
   );
 }
