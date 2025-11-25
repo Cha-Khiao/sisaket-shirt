@@ -1,5 +1,3 @@
-/* src/app/globals.css */
-
 /* 1. Imports & Variables */
 @import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -19,7 +17,6 @@ body {
   font-family: var(--font-sarabun), sans-serif;
   color: var(--text-main);
   
-  /* Gradient พื้นหลัง + Fixed เพื่อให้ดูมีมิติ */
   background-image: 
     radial-gradient(circle at 50% 0%, rgba(111, 106, 248, 0.08) 0%, transparent 60%),
     linear-gradient(to bottom, #e8eaf6 0%, #dee2e6 100%);
@@ -27,14 +24,12 @@ body {
   background-attachment: fixed;
   background-size: cover;
   min-height: 100vh;
-  overflow-x: hidden; /* กัน Scroll แนวนอน */
+  overflow-x: hidden;
 }
 
-/* ✨ สร้าง Class ใหม่ สำหรับหน้าลูกค้าโดยเฉพาะ */
 .customer-layout {
-  padding-top: 50px; /* ย้ายมานี่ */
+  padding-top: 50px;
   
-  /* ย้ายพื้นหลังสวยๆ มานี่ */
   background-color: #e8eaf6; 
   background-image: 
     radial-gradient(circle at 50% 0%, rgba(111, 106, 248, 0.08) 0%, transparent 60%),
@@ -54,14 +49,13 @@ h1, h2, h3, h4, h5, h6 {
 
 a { text-decoration: none; }
 
-/* พื้นหลัง Ambient แบบ Fixed (Animation เล็กน้อย) */
 .fixed-background {
   position: fixed;
   top: 0;
   left: 0;
   width: 100vw;
   height: 100vh;
-  z-index: -1; /* แก้เป็น -1 เพื่อไม่ให้บังเนื้อหา */
+  z-index: -1;
   pointer-events: none;
   background: 
     radial-gradient(circle at 15% 10%, rgba(79, 70, 229, 0.03) 0%, transparent 40%),
@@ -112,7 +106,7 @@ a { text-decoration: none; }
 .animate-blob-delay { animation-delay: 5s; }
 
 
-/* 4. Buttons (รวมทุกแบบไว้ที่นี่) */
+/* 4. Buttons */
 
 /* Standard Bootstrap Override */
 .btn-primary {
@@ -259,7 +253,7 @@ a { text-decoration: none; }
 /* 6. Cards & Containers */
 .card {
   background-color: var(--bg-card);
-  border: none; /* แก้ไขตามคำขอ: เอา !important ออก */
+  border: none;
   border-radius: 20px !important; 
   box-shadow: 0 5px 20px rgba(111, 106, 248, 0.05); 
   transition: transform 0.2s ease, box-shadow 0.2s ease;
@@ -308,7 +302,7 @@ a { text-decoration: none; }
   border-radius: 1.5rem; 
   overflow: hidden;
   position: relative;
-  -webkit-mask-image: -webkit-radial-gradient(white, black); /* Fix Safari Radius */
+  -webkit-mask-image: -webkit-radial-gradient(white, black);
   transform: translateZ(0);
 }
 .product-carousel-wrapper {
@@ -319,7 +313,7 @@ a { text-decoration: none; }
   border: none !important;
 }
 
-/* Ghost Arrows (ลูกศรจางๆ ที่โผล่ตอน Hover) */
+/* Ghost Arrows */
 .hero-carousel-custom .carousel-control-prev,
 .hero-carousel-custom .carousel-control-next,
 .product-carousel-custom .carousel-control-prev,
@@ -386,7 +380,7 @@ a { text-decoration: none; }
   color: var(--primary-color);
 }
 
-/* Striped Custom Table (ตารางสลับสี) */
+/* Striped Custom Table */
 .table-striped-custom tbody tr:nth-of-type(odd) { background-color: #ffffff; }
 .table-striped-custom tbody tr:nth-of-type(even) { background-color: #f1f3f5; }
 .table-striped-custom tbody tr:hover {
@@ -396,7 +390,7 @@ a { text-decoration: none; }
   box-shadow: 0 2px 5px rgba(0,0,0,0.05);
 }
 
-/* Dashboard Table (บังคับสีสำหรับหน้า Dashboard) */
+/* Dashboard Table */
 .table-dashboard-striped {
   --bs-table-bg: transparent !important;
   --bs-table-accent-bg: transparent !important;
@@ -470,7 +464,7 @@ a { text-decoration: none; }
     width: 15% !important;
     height: 50px !important;
     top: calc(50% - 25px) !important;
-    opacity: 0.7 !important; /* ให้เห็นนิดหน่อย */
+    opacity: 0.7 !important;
     transform: none !important;
   }
 
@@ -551,7 +545,7 @@ a { text-decoration: none; }
   color: #000 !important;
 }
 
-/* --- Global Animations & Effects --- */
+/* --- Animations & Effects --- */
 
 /* Hover Effect สำหรับ Dropzone สีส้ม */
 .hover-bg-warning-light:hover {
@@ -560,7 +554,7 @@ a { text-decoration: none; }
   transform: scale(1.01);
 }
 
-/* Animations เดิม (ถ้ามีแล้วไม่ต้องลงซ้ำ) */
+/* Animations */
 .animate-bounce { animation: bounce 2s infinite; }
 @keyframes bounce {
   0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
@@ -596,8 +590,6 @@ a { text-decoration: none; }
 
 .hover-bg-light:hover { background-color: #f8f9fa !important; color: #000 !important; }
 
-/* --- เพิ่มส่วนนี้ต่อท้ายไฟล์ globals.css --- */
-
 /* Status Borders (ขอบสีตามสถานะ) */
 .card-border-primary { border: 2px solid #4F46E5 !important; }
 .card-border-secondary { border: 2px solid #64748b !important; }
@@ -616,11 +608,8 @@ a { text-decoration: none; }
   box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.2);
 }
 
-/* =========================================
-   🎨 ORDER DETAILS & HIGHLIGHTS
-   ========================================= */
-
-/* 1. Animation สำหรับไอคอนและ UI */
+/* ORDER DETAILS & HIGHLIGHTS */
+/* Animation สำหรับไอคอนและ UI */
 .animate-bounce-slow {
   animation: bounceSlow 3s infinite ease-in-out;
 }
@@ -629,7 +618,7 @@ a { text-decoration: none; }
   50% { transform: translateY(-8px); }
 }
 
-/* 2. Hover Effects */
+/* Hover Effects */
 .hover-card-up {
   transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
@@ -645,7 +634,7 @@ a { text-decoration: none; }
   transform: scale(1.1);
 }
 
-/* 3. Highlight Bars (แถบสีหัวการ์ด) - ใช้ Gradient เพื่อความสวยงาม */
+/* 3. Highlight Bars ใช้ Gradient */
 .bar-gradient-warning { background: linear-gradient(90deg, #f59e0b, #d97706); }
 .bar-gradient-info { background: linear-gradient(90deg, #0ea5e9, #0284c7); }
 .bar-gradient-primary { background: linear-gradient(90deg, #4F46E5, #4338ca); }
@@ -653,7 +642,7 @@ a { text-decoration: none; }
 .bar-gradient-danger { background: linear-gradient(90deg, #ef4444, #dc2626); }
 .bar-gradient-secondary { background: linear-gradient(90deg, #6b7280, #4b5563); }
 
-/* 4. Status Backgrounds (พื้นหลัง Banner) */
+/* 4. Status Backgrounds */
 .bg-status-warning { background: linear-gradient(135deg, #fff7ed 0%, #fffaf0 100%); border-bottom: 1px solid #fed7aa; }
 .bg-status-info { background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-bottom: 1px solid #bae6fd; }
 .bg-status-primary { background: linear-gradient(135deg, #eef2ff 0%, #e0e7ff 100%); border-bottom: 1px solid #c7d2fe; }
@@ -661,7 +650,7 @@ a { text-decoration: none; }
 .bg-status-danger { background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); border-bottom: 1px solid #fca5a5; }
 .bg-status-general { background: #f8f9fa; border-bottom: 1px solid #e9ecef; }
 
-/* --- Status Borders (ขอบสีรอบการ์ด) --- */
+/* --- Status Borders --- */
 .border-status-warning { border: 2px solid #f59e0b !important; }
 .border-status-info    { border: 2px solid #0ea5e9 !important; }
 .border-status-primary { border: 2px solid #4F46E5 !important; }
@@ -669,7 +658,7 @@ a { text-decoration: none; }
 .border-status-danger  { border: 2px solid #ef4444 !important; }
 .border-status-general { border: 2px solid #6b7280 !important; }
 
-/* --- Status Backgrounds (พื้นหลังส่วนหัว Banner) --- */
+/* --- Status Backgrounds --- */
 .bg-status-warning { background: linear-gradient(135deg, #fff7ed 0%, #fffaf0 100%); }
 .bg-status-info    { background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); }
 .bg-status-primary { background: linear-gradient(135deg, #eef2ff 0%, #e0e7ff 100%); }
@@ -687,13 +676,7 @@ a { text-decoration: none; }
 .hover-card-up { transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); }
 .hover-card-up:hover { transform: translateY(-5px); box-shadow: 0 15px 30px rgba(0,0,0,0.1) !important; }
 
-/* ... (โค้ดเดิมที่มีอยู่แล้ว) ... */
-
-/* =========================================
-   🛠️ ADMIN LAYOUT STYLES
-   ========================================= */
-
-/* Effect พื้นหลังแก้วตอน Hover เมนู */
+/* ADMIN LAYOUT STYLES */
 .hover-bg-glass:hover {
   background-color: rgba(255, 255, 255, 0.08);
   color: white !important;
@@ -706,7 +689,7 @@ a { text-decoration: none; }
   background-color: rgba(220, 53, 69, 0.1);
 }
 
-/* Custom Scrollbar (ปรับให้ Scrollbar ดูดีขึ้นทั้งเว็บ) */
+/* Custom Scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
@@ -722,10 +705,7 @@ a { text-decoration: none; }
   background: #94a3b8;
 }
 
-/* =========================================
-   🔐 ADMIN LOGIN PAGE
-   ========================================= */
-
+/* ADMIN LOGIN PAGE */
 .admin-login-wrapper {
   background: radial-gradient(circle at 50% 50%, #1e293b 0%, #0f172a 100%);
   font-family: var(--font-sarabun);
@@ -763,16 +743,13 @@ a { text-decoration: none; }
   transform: translate(50%, 50%);
 }
 
-/* Focus State สำหรับช่องกรอกข้อมูล */
+/* Focus State */
 .input-group-focus:focus-within {
   border-color: var(--primary-color) !important;
   box-shadow: 0 0 0 4px rgba(111, 106, 248, 0.1) !important;
 }
 
-/* =========================================
-   📊 ADMIN DASHBOARD & ORDERS
-   ========================================= */
-
+/* ADMIN DASHBOARD & ORDERS */
 /* Stats Cards */
 .admin-stat-card {
   transition: transform 0.2s ease, box-shadow 0.2s ease;
@@ -827,7 +804,6 @@ a { text-decoration: none; }
   background-color: #f8fafc;
 }
 
-/* Status Badges (Admin Style) */
 .badge-status {
   padding: 0.5em 1em !important;
   border-radius: 50rem !important;
@@ -841,7 +817,6 @@ a { text-decoration: none; }
 .badge-status-success { background-color: #f0fdf4 !important; color: #15803d !important; border: 1px solid #dcfce7; }
 .badge-status-secondary { background-color: #f3f4f6 !important; color: #4b5563 !important; border: 1px solid #e5e7eb; }
 
-/* Tab Filter Button */
 .nav-pills-custom .nav-link {
   color: #64748b;
   font-weight: 500;
@@ -860,10 +835,7 @@ a { text-decoration: none; }
   box-shadow: 0 4px 10px rgba(79, 70, 229, 0.3);
 }
 
-/* =========================================
-   ➕ CREATE PRODUCT PAGE UTILS
-   ========================================= */
-
+/* CREATE PRODUCT PAGE UTILS */
 .hover-bg-gray:hover {
   background-color: #e9ecef !important;
   border-color: #adb5bd !important;
@@ -881,7 +853,6 @@ a { text-decoration: none; }
   letter-spacing: 1px;
 }
 
-/* ปรับแต่ง Input Group ให้ดู Modern */
 .input-group-modern .input-group-text {
   background-color: transparent;
   border: none;
@@ -896,22 +867,17 @@ a { text-decoration: none; }
 }
 
 .input-group-modern {
-  background-color: #f8f9fa; /* bg-light */
-  border-radius: 0.5rem;     /* rounded-3 */
+  background-color: #f8f9fa;
+  border-radius: 0.5rem;
   overflow: hidden;
 }
 
-/* =========================================
-   🛍️ ADMIN PRODUCTS PAGE
-   ========================================= */
-
-/* Filter รูปภาพสินค้าที่ปิดการขาย */
+/* ADMIN PRODUCTS PAGE */
 .grayscale {
   filter: grayscale(100%);
   opacity: 0.6;
 }
 
-/* ปรับแต่ง Switch Toggle ให้เป็นสีเขียว */
 .form-check-input:checked {
   background-color: #10b981;
   border-color: #10b981;
@@ -922,7 +888,6 @@ a { text-decoration: none; }
   border-color: #10b981;
 }
 
-/* Fix Alignment for Switch inside Table */
 .switch-center {
   display: flex;
   justify-content: center;
@@ -936,18 +901,13 @@ a { text-decoration: none; }
   float: none;
 }
 
-/* =========================================
-   🛍️ ADMIN PRODUCTS PAGE STYLES
-   ========================================= */
-
-/* Filter สำหรับสินค้าที่ปิดการขาย (ภาพขาวดำ + จางลง) */
+/* ADMIN PRODUCTS PAGE STYLES */
 .grayscale {
   filter: grayscale(100%);
   opacity: 0.6;
   transition: all 0.3s ease;
 }
 
-/* ปรับแต่ง Switch Toggle ให้เป็นสีเขียว (Success) */
 .form-check-input:checked {
   background-color: #10b981 !important;
   border-color: #10b981 !important;
@@ -958,7 +918,6 @@ a { text-decoration: none; }
   border-color: #10b981 !important;
 }
 
-/* Helper จัดกึ่งกลาง Switch ในตาราง */
 .switch-center {
   display: flex;
   justify-content: center;
@@ -966,6 +925,6 @@ a { text-decoration: none; }
   width: 100%;
 }
 .switch-center .form-check-input {
-  margin: 0 !important; /* ลบ margin default ของ bootstrap */
+  margin: 0 !important;
   float: none;
 }
