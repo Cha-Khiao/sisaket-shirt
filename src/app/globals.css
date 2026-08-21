@@ -452,11 +452,34 @@ a { text-decoration: none; }
 .product-hover-effect:hover .hover-zoom { transform: scale(1.08); }
 
 
-/* 12. Responsive (Mobile Rules) */
+/* 12. Responsive */
+
+/* Navbar brand text */
+.navbar-brand-text { font-size: 1rem; }
+@media (max-width: 768px) { .navbar-brand-text { font-size: 0.85rem; } }
+
+/* Default (desktop) */
+.hero-carousel-responsive { height: 400px; }
+.hero-carousel-responsive .carousel-inner,
+.hero-carousel-responsive .carousel-item { height: 100%; }
+.product-image-responsive { height: 350px; }
+.hero-title-responsive { font-size: 2.2rem; }
+.hero-desc-responsive { font-size: 0.95rem; }
+.hero-btn-responsive { font-size: 1rem; }
+
+/* Tablet (768px - 1024px) */
+@media (max-width: 1024px) and (min-width: 769px) {
+  .hero-carousel-responsive { height: 320px; }
+  .product-image-responsive { height: 280px; }
+  .hero-title-responsive { font-size: 1.8rem; }
+  .hero-desc-responsive { font-size: 0.9rem; }
+}
+
+/* Mobile (max 768px) */
 @media (max-width: 768px) {
   .hero-buttons-mobile-center { justify-content: center !important; }
-  
-  /* ซ่อนลูกศรบนมือถือ + ปรับ indicator */
+
+  /* Carousel controls */
   .hero-carousel-custom .carousel-control-prev,
   .hero-carousel-custom .carousel-control-next,
   .product-carousel-custom .carousel-control-prev,
@@ -475,10 +498,18 @@ a { text-decoration: none; }
   }
   .carousel-indicators .active { background-color: var(--primary-color) !important; }
 
-  /* จัด layout มือถือ */
-  .hero-carousel-wrapper { height: 300px !important; }
+  /* Hero & Product sizing */
+  .hero-carousel-responsive { height: 240px !important; }
+  .product-image-responsive { height: 220px !important; }
+  .hero-title-responsive { font-size: 1.4rem !important; }
+  .hero-desc-responsive { font-size: 0.8rem !important; }
+  .hero-btn-responsive { font-size: 0.85rem !important; }
+
   .product-carousel-wrapper .p-lg-5 { padding: 1.5rem !important; }
-  
+
+  /* Revenue display */
+  .display-5 { font-size: 1.8rem !important; }
+
   .payment-section-mobile-no-border .border-end-md {
     border-right: none !important;
     border-bottom: 1px solid #eee;
@@ -487,6 +518,17 @@ a { text-decoration: none; }
   }
 
   .mobile-card-highlight:active { transform: scale(0.98); }
+
+  /* Tighter padding on mobile */
+  .customer-layout { padding-top: 40px; }
+}
+
+/* Extra small (max 400px) */
+@media (max-width: 400px) {
+  .hero-carousel-responsive { height: 200px !important; }
+  .product-image-responsive { height: 180px !important; }
+  .hero-title-responsive { font-size: 1.2rem !important; }
+  .hero-desc-responsive { font-size: 0.75rem !important; }
 }
 
 /* --- Success Page Animations & Effects --- */
@@ -705,43 +747,7 @@ a { text-decoration: none; }
   background: #94a3b8;
 }
 
-/* ADMIN LOGIN PAGE */
-.admin-login-wrapper {
-  background: radial-gradient(circle at 50% 50%, #1e293b 0%, #0f172a 100%);
-  font-family: var(--font-sarabun);
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  overflow: hidden;
-}
-
-.admin-login-decoration-1 {
-  position: absolute;
-  top: 0;
-  caret: 0;
-  width: 600px;
-  height: 600px;
-  background: #4F46E5;
-  filter: blur(100px);
-  opacity: 0.1;
-  border-radius: 50%;
-  transform: translate(-50%, -50%);
-}
-
-.admin-login-decoration-2 {
-  position: absolute;
-  bottom: 0;
-  bleed: 0;
-  width: 500px;
-  height: 500px;
-  background: #0ea5e9;
-  filter: blur(80px);
-  opacity: 0.1;
-  border-radius: 50%;
-  transform: translate(50%, 50%);
-}
+/* ADMIN LOGIN PAGE (legacy - redirects to unified login) */
 
 /* Focus State */
 .input-group-focus:focus-within {
@@ -927,4 +933,45 @@ a { text-decoration: none; }
 .switch-center .form-check-input {
   margin: 0 !important;
   float: none;
+}
+
+/* Profile Card Button Animations */
+.btn-bounce {
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.25s ease;
+}
+.btn-bounce:hover {
+  transform: scale(1.1);
+}
+.btn-bounce:active {
+  transform: scale(0.88);
+  transition-duration: 0.1s;
+}
+
+.btn-bounce-back:hover {
+  background: #eef2ff !important;
+  box-shadow: 0 4px 16px rgba(99,102,241,0.25), 0 0 0 3px rgba(99,102,241,0.08) !important;
+  border-color: #c7d2fe !important;
+  color: #4f46e5 !important;
+}
+.btn-bounce-back:active {
+  box-shadow: 0 2px 6px rgba(99,102,241,0.2) !important;
+}
+
+.btn-bounce-close:hover {
+  background: #fef2f2 !important;
+  box-shadow: 0 4px 16px rgba(239,68,68,0.25), 0 0 0 3px rgba(239,68,68,0.08) !important;
+  border-color: #fca5a5 !important;
+  color: #dc2626 !important;
+}
+.btn-bounce-close:active {
+  box-shadow: 0 2px 6px rgba(239,68,68,0.2) !important;
+}
+
+.btn-bounce-camera:hover {
+  background: #eef2ff !important;
+  box-shadow: 0 4px 16px rgba(99,102,241,0.3), 0 0 0 3px rgba(99,102,241,0.1) !important;
+  border-color: #a5b4fc !important;
+}
+.btn-bounce-camera:active {
+  box-shadow: 0 2px 6px rgba(99,102,241,0.2) !important;
 }

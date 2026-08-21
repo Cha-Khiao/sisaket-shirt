@@ -98,10 +98,6 @@ export default function Footer() {
         <hr className="border-secondary opacity-25 my-4"/>
         <div className="text-center text-white-50 small position-relative">
             <span>&copy; {new Date().getFullYear()} Sisaket Shirt. All rights reserved.</span>
-            
-            <Link href="/admin/login" className="position-absolute end-0 top-50 translate-middle-y text-white-50 hover-text-white p-2" title="Admin Login">
-                <FaUserShield size={20} />
-            </Link>
         </div>
       </Container>
     </footer>

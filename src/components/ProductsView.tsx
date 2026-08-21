@@ -100,7 +100,7 @@ export default function ProductsView({ initialProducts }: ProductsViewProps) {
       setQuantities(prev => {
           const currentQty = prev[size] || 0;
           const newQty = Math.max(0, Math.min(maxStock, currentQty + delta));
-          
+
           if (newQty === 0) {
               const copy = { ...prev };
               delete copy[size];
@@ -108,6 +108,16 @@ export default function ProductsView({ initialProducts }: ProductsViewProps) {
           }
           return { ...prev, [size]: newQty };
       });
+  };
+
+  const handleSetQuantity = (size: string, value: string, maxStock: number) => {
+      const num = parseInt(value, 10);
+      if (value === '' || isNaN(num)) {
+          setQuantities(prev => { const copy = { ...prev }; delete copy[size]; return copy; });
+          return;
+      }
+      const clamped = Math.max(0, Math.min(maxStock, num));
+      setQuantities(prev => clamped === 0 ? (() => { const copy = { ...prev }; delete copy[size]; return copy; })() : { ...prev, [size]: clamped });
   };
 
   const handleAddToCart = () => {
@@ -269,24 +279,34 @@ export default function ProductsView({ initialProducts }: ProductsViewProps) {
               {selectedProduct && (
                   <div className="px-1">
                       {/* Product Info Header */}
-                      <div className="d-flex gap-3 mb-3 p-3 rounded-3 bg-light border align-items-center position-relative overflow-hidden">
-                          <div className="position-absolute top-0 start-0 w-100 h-100 bg-white opacity-50"></div>
-                          <div className="position-relative bg-white rounded-3 border flex-shrink-0 shadow-sm" style={{width: 70, height: 70}}>
+                      <div className="d-flex gap-3 mb-3 p-3 rounded-4 align-items-center position-relative overflow-hidden"
+                           style={{ background: 'linear-gradient(135deg, #f0f4ff 0%, #faf5ff 50%, #fff 100%)', border: '1px solid #e0e7ff', boxShadow: '0 2px 12px rgba(99,102,241,0.08)' }}>
+                          <div className="position-relative rounded-3 flex-shrink-0 overflow-hidden"
+                               style={{ width: 70, height: 70, background: '#fff', border: '1px solid #e0e7ff', boxShadow: '0 2px 8px rgba(99,102,241,0.1)' }}>
                              <Image src={selectedProduct.imageUrl} alt="Product" fill style={{objectFit:'contain'}}/>
                           </div>
                           <div className="position-relative">
                               <div className="mb-1">
-                                  <Badge bg={getBadgeColor(selectedProduct.type)} className="fw-normal small px-2 py-1">
+                                  <Badge bg={getBadgeColor(selectedProduct.type)} className="fw-normal small px-2 py-1"
+                                         style={{ boxShadow: '0 1px 4px rgba(0,0,0,0.1)' }}>
                                       <FaTag className="me-1"/> {getTypeName(selectedProduct.type)}
                                   </Badge>
                               </div>
                               <h6 className="fw-bold mb-0 text-dark">{selectedProduct.name}</h6>
-                              <div className="text-primary fw-bold mt-1">฿{selectedProduct.price.toLocaleString()} <span className="text-muted fw-normal small">/ ตัว</span></div>
+                              <div className="fw-bold mt-1" style={{ color: '#4f46e5' }}>฿{selectedProduct.price.toLocaleString()} <span className="text-muted fw-normal small">/ ตัว</span></div>
                           </div>
                           <div className="ms-auto position-relative z-1">
-                             <Button variant="outline-danger" size="sm" className="rounded-pill px-3" onClick={() => setQuantities({})} disabled={totalSelectedItems === 0}>
-                                <FaUndo className="me-1"/> ล้างค่า
-                             </Button>
+                             <button type="button" className="btn-bounce rounded-pill px-3 py-1 border-0 fw-semibold d-flex align-items-center gap-1"
+                                     style={{
+                                       background: totalSelectedItems === 0 ? '#f1f5f9' : 'linear-gradient(135deg, #fee2e2, #fecaca)',
+                                       color: totalSelectedItems === 0 ? '#94a3b8' : '#dc2626',
+                                       boxShadow: totalSelectedItems === 0 ? 'none' : '0 2px 8px rgba(239,68,68,0.15)',
+                                       fontSize: '0.8rem', cursor: totalSelectedItems === 0 ? 'not-allowed' : 'pointer',
+                                       transition: 'all 0.2s'
+                                     }}
+                                     onClick={() => setQuantities({})} disabled={totalSelectedItems === 0}>
+                                <FaUndo size={10}/> ล้างค่า
+                             </button>
                           </div>
                       </div>
                       
@@ -297,60 +317,100 @@ export default function ProductsView({ initialProducts }: ProductsViewProps) {
                               <span>จำนวนที่เลือก</span>
                           </div>
                           
-                          <div className="d-flex flex-column gap-2" style={{maxHeight: '350px', overflowY: 'auto'}}>
+                          <div className="d-flex flex-column gap-2" style={{maxHeight: '350px', overflowY: 'auto', padding: '2px'}}>
                             {selectedProduct.stock
                                 .filter(s => s.quantity > 0)
-                                .map(s => {
+                                .map((s, idx) => {
                                     const currentQty = quantities[s.size] || 0;
                                     const isSelected = currentQty > 0;
-                                    const activeTheme = selectedProduct.type === 'mourning' ? 'dark' : 'primary';
-                                    
+                                    const isMourning = selectedProduct.type === 'mourning';
+
                                     const remainingRealTime = s.quantity - currentQty;
                                     const isMaxReached = remainingRealTime === 0;
 
+                                    const rowBg = isSelected
+                                      ? (isMourning ? 'linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)' : 'linear-gradient(135deg, #eef2ff 0%, #e0e7ff 100%)')
+                                      : idx % 2 === 0
+                                        ? '#ffffff'
+                                        : '#f8fafc';
+
+                                    const rowBorder = isSelected
+                                      ? (isMourning ? '1.5px solid #6b7280' : '1.5px solid #a5b4fc')
+                                      : '1px solid #e2e8f0';
+
+                                    const rowShadow = isSelected
+                                      ? (isMourning ? '0 2px 8px rgba(0,0,0,0.1)' : '0 2px 12px rgba(99,102,241,0.15)')
+                                      : '0 1px 3px rgba(0,0,0,0.04)';
+
                                     return (
-                                        <div key={s.size} 
-                                             className={`d-flex align-items-center justify-content-between p-2 rounded-3 border transition-all shadow-sm ${isSelected ? `border-${activeTheme} bg-${activeTheme} bg-opacity-10` : 'border-light-subtle bg-white'}`}
+                                        <div key={s.size}
+                                             className="d-flex align-items-center justify-content-between p-2 px-3 rounded-3"
+                                             style={{ background: rowBg, border: rowBorder, boxShadow: rowShadow, transition: 'all 0.25s ease' }}
                                         >
-                                            <div className="d-flex align-items-center gap-3 ps-1">
-                                                <div className={`fw-bold rounded-circle d-flex align-items-center justify-content-center ${isSelected ? `bg-${activeTheme} text-white` : 'bg-light text-dark border'}`} 
-                                                     style={{width: '40px', height: '40px', fontSize: '1rem'}}>
+                                            <div className="d-flex align-items-center gap-3">
+                                                <div className="fw-bold rounded-circle d-flex align-items-center justify-content-center"
+                                                     style={{
+                                                       width: 40, height: 40, fontSize: '0.95rem',
+                                                       background: isSelected
+                                                         ? (isMourning ? 'linear-gradient(135deg, #374151, #1f2937)' : 'linear-gradient(135deg, #6366f1, #4f46e5)')
+                                                         : '#f1f5f9',
+                                                       color: isSelected ? '#fff' : '#334155',
+                                                       border: isSelected ? 'none' : '1px solid #e2e8f0',
+                                                       boxShadow: isSelected ? '0 2px 8px rgba(99,102,241,0.25)' : 'none',
+                                                       transition: 'all 0.25s ease'
+                                                     }}>
                                                     {s.size}
                                                 </div>
                                                 <div className="lh-1">
-                                                    <div className="d-flex align-items-center gap-2">
-                                                        <span className={`small ${isMaxReached ? 'text-danger fw-bold' : 'text-success'}`}>
-                                                            {isMaxReached ? 'ครบโควตา' : `เหลือ ${remainingRealTime}`}
-                                                        </span>
-                                                        {isSelected && <small className="text-muted" style={{fontSize: '0.65rem'}}>(จาก {s.quantity})</small>}
-                                                    </div>
+                                                    <span className={`small fw-semibold ${isMaxReached ? 'text-danger' : 'text-success'}`}>
+                                                        {isMaxReached ? 'ครบโควตา' : `เหลือ ${remainingRealTime}`}
+                                                    </span>
+                                                    {isSelected && <small className="text-muted d-block" style={{fontSize: '0.65rem'}}>จาก {s.quantity}</small>}
                                                 </div>
                                             </div>
 
-                                            <div className="d-flex align-items-center bg-white rounded-pill border px-1 py-1 shadow-sm">
-                                                <Button 
-                                                    variant="light" 
-                                                    className="rounded-circle p-0 d-flex align-items-center justify-content-center text-danger border-0 hover-bg-danger-light" 
-                                                    style={{width: 32, height: 32}} 
+                                            <div className="d-flex align-items-center rounded-pill px-1 py-1"
+                                                 style={{ background: '#fff', border: '1px solid #e2e8f0', boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }}>
+                                                <button
+                                                    type="button"
+                                                    className="btn-bounce rounded-circle p-0 d-flex align-items-center justify-content-center border-0"
+                                                    style={{
+                                                      width: 32, height: 32, cursor: currentQty === 0 ? 'not-allowed' : 'pointer',
+                                                      background: currentQty === 0 ? '#f8f9fa' : 'linear-gradient(135deg, #fee2e2, #fecaca)',
+                                                      color: currentQty === 0 ? '#cbd5e1' : '#dc2626',
+                                                      boxShadow: currentQty === 0 ? 'none' : '0 1px 4px rgba(239,68,68,0.15)',
+                                                      transition: 'all 0.2s'
+                                                    }}
                                                     onClick={() => handleUpdateQuantity(s.size, -1, s.quantity)}
                                                     disabled={currentQty === 0}
                                                 >
                                                     <FaMinus size={10}/>
-                                                </Button>
-                                                
-                                                <span className="fw-bold text-center mx-2 text-dark user-select-none" style={{width: '25px', fontSize: '1rem'}}>
-                                                    {currentQty}
-                                                </span>
-                                                
-                                                <Button 
-                                                    variant={activeTheme}
-                                                    className="rounded-circle p-0 d-flex align-items-center justify-content-center border-0 text-white" 
-                                                    style={{width: 32, height: 32}} 
+                                                </button>
+
+                                                <input
+                                                    type="text"
+                                                    inputMode="numeric"
+                                                    className="fw-bold text-center border-0 bg-transparent"
+                                                    style={{ width: 36, fontSize: '1rem', color: '#1e293b', outline: 'none' }}
+                                                    value={currentQty}
+                                                    onChange={(e) => handleSetQuantity(s.size, e.target.value, s.quantity)}
+                                                />
+
+                                                <button
+                                                    type="button"
+                                                    className="btn-bounce rounded-circle p-0 d-flex align-items-center justify-content-center border-0 text-white"
+                                                    style={{
+                                                      width: 32, height: 32, cursor: isMaxReached ? 'not-allowed' : 'pointer',
+                                                      background: isMaxReached ? '#e2e8f0' : (isMourning ? 'linear-gradient(135deg, #374151, #1f2937)' : 'linear-gradient(135deg, #818cf8, #4f46e5)'),
+                                                      color: isMaxReached ? '#94a3b8' : '#fff',
+                                                      boxShadow: isMaxReached ? 'none' : (isMourning ? '0 1px 4px rgba(0,0,0,0.2)' : '0 1px 4px rgba(99,102,241,0.3)'),
+                                                      transition: 'all 0.2s'
+                                                    }}
                                                     onClick={() => handleUpdateQuantity(s.size, 1, s.quantity)}
                                                     disabled={isMaxReached}
                                                 >
                                                     <FaPlus size={10}/>
-                                                </Button>
+                                                </button>
                                             </div>
                                         </div>
                                     )
@@ -362,23 +422,34 @@ export default function ProductsView({ initialProducts }: ProductsViewProps) {
               )}
           </Modal.Body>
           <Modal.Footer className="border-top-0 pt-0 pb-3 px-3">
-              <div className="d-flex justify-content-between w-100 align-items-center bg-light p-3 rounded-4 border shadow-sm">
+              <div className="d-flex justify-content-between w-100 align-items-center p-3 rounded-4"
+                   style={{ background: 'linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)', border: '1px solid #e2e8f0', boxShadow: '0 4px 12px rgba(0,0,0,0.06)' }}>
                   <div className="ps-1">
-                      <span className="text-secondary small me-2">ยอดรวม:</span>
-                      <span className="fw-bold text-primary fs-4">{totalSelectedItems}</span>
+                      <span className="text-secondary small d-block" style={{ fontSize: '0.7rem' }}>ยอด</span>
+                      <span className="fw-bold fs-4" style={{ color: totalSelectedItems > 0 ? '#4f46e5' : '#94a3b8' }}>{totalSelectedItems}</span>
                       <span className="text-secondary small ms-1">ชิ้น</span>
                   </div>
                   <div className="d-flex gap-2">
-                      <Button variant="light" size="sm" onClick={() => setShowModal(false)} className="rounded-pill px-3 border">ยกเลิก</Button>
-                      <Button 
-                        size="sm"
-                        variant={selectedProduct?.type === 'mourning' ? 'dark' : 'primary'} 
-                        onClick={handleAddToCart} 
-                        disabled={totalSelectedItems === 0} 
-                        className="fw-bold px-4 rounded-pill shadow hover-lift"
+                      <button
+                        type="button"
+                        onClick={() => setShowModal(false)}
+                        className="btn-bounce rounded-pill px-3 py-2 fw-semibold border-0"
+                        style={{ background: '#fff', color: '#64748b', boxShadow: '0 1px 4px rgba(0,0,0,0.08)', border: '1px solid #e2e8f0' }}
+                      >ยกเลิก</button>
+                      <button
+                        type="button"
+                        onClick={handleAddToCart}
+                        disabled={totalSelectedItems === 0}
+                        className="btn-bounce fw-bold px-4 py-2 rounded-pill border-0 text-white d-flex align-items-center gap-2"
+                        style={{
+                          background: totalSelectedItems === 0 ? '#cbd5e1' : (selectedProduct?.type === 'mourning' ? 'linear-gradient(135deg, #374151, #1f2937)' : 'linear-gradient(135deg, #818cf8, #4f46e5)'),
+                          boxShadow: totalSelectedItems === 0 ? 'none' : (selectedProduct?.type === 'mourning' ? '0 4px 14px rgba(0,0,0,0.2)' : '0 4px 14px rgba(99,102,241,0.35)'),
+                          cursor: totalSelectedItems === 0 ? 'not-allowed' : 'pointer',
+                          transition: 'all 0.25s ease'
+                        }}
                       >
-                          <FaCheck className="me-2"/> ยืนยันลงตะกร้า
-                      </Button>
+                          <FaCheck /> ยืนยันลงตะกร้า
+                      </button>
                   </div>
               </div>
           </Modal.Footer>
