@@ -5,7 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Container, Row, Col, Card, Carousel } from 'react-bootstrap';
 import { 
-  FaShoppingCart, FaTshirt, FaTruck, FaTag, 
+  FaShoppingCart, FaTshirt,
   FaLine, FaFacebook, FaMoneyBillWave, FaChartPie, FaBoxOpen, FaRulerCombined, FaClipboardList, FaTrophy, FaChartLine
 } from 'react-icons/fa';
 import { Product } from '@/types';
@@ -88,44 +88,41 @@ export default function HomeView({ products, stats, sizeStatsTotal }: HomeViewPr
   return (
     <>
       {/* Hero Section */}
-      <section className="pt-5 pb-3">
+      <section className="pt-3 pt-lg-5 pb-3">
         <Container>
-          <div 
-            className="bg-white rounded-4 p-4 p-lg-5 position-relative"
+          <div
+            className="bg-white rounded-4 p-3 p-lg-5 position-relative"
             style={{ boxShadow: '0 10px 30px rgba(0, 0, 0, 0.1)', margin: '10px' }}
           >
             <Row className="align-items-center gy-4">
               <Col lg={6} className="order-2 order-lg-1">
-                <div className="d-inline-block bg-white border px-3 py-2 rounded-pill mb-3 shadow-sm">
-                  <span className="text-primary fw-bold small">🎉 กิจกรรมพิเศษ 243 ปี</span>
-                </div>
-                <h1 className="display-5 fw-bold mb-3 text-dark" style={{lineHeight: '1.2'}}>
+                <h1 className="fw-bold mb-2 mb-lg-3 text-dark hero-title-responsive" style={{lineHeight: '1.2'}}>
                   ร่วมเฉลิมฉลอง<br/><span className="text-primary">เมืองศรีสะเกษ 243 ปี</span>
                 </h1>
-                <p className="lead text-secondary mb-4 fw-normal fs-6">
+                <p className="text-secondary mb-3 mb-lg-4 fw-normal hero-desc-responsive">
                   สั่งซื้อเสื้อที่ระลึก "สู่ขวัญบ้าน บายศรีเมือง รุ่งเรือง 243 ปี"<br className="d-none d-md-block"/>
                   รายได้สมทบทุนจัดกิจกรรมสร้างสรรค์เพื่อบ้านเกิดของเรา
                 </p>
                 <div className="d-flex gap-3 justify-content-lg-start hero-buttons-mobile-center">
-                  <Link href="/products" className="btn btn-primary btn-lg fw-bold px-4 shadow d-inline-flex align-items-center hover-lift">
+                  <Link href="/products" className="btn btn-primary fw-bold px-3 px-lg-4 py-2 py-lg-3 shadow d-inline-flex align-items-center hover-lift hero-btn-responsive">
                     <FaShoppingCart className="me-2" /> สั่งซื้อเลย
                   </Link>
                 </div>
               </Col>
               <Col lg={6} className="order-1 order-lg-2">
-                 <div className="w-100 position-relative hero-carousel-wrapper" style={{height: '400px'}}>
+                 <div className="w-100 position-relative hero-carousel-wrapper hero-carousel-responsive">
                     <Carousel controls={true} indicators={products.length > 1} interval={3000} touch={true} variant="dark" fade={false} className="h-100 hero-carousel-custom carousel-controls-mobile-visible">
                       {products.length > 0 ? (
                           products.map((p, idx) => (
                             <Carousel.Item key={idx} className="h-100">
-                              <div className="d-flex justify-content-center align-items-center w-100" style={{ height: '400px' }}>
+                              <div className="d-flex justify-content-center align-items-center w-100 h-100">
                                 <SmartImage src={p.imageUrl} alt={p.name} type="product" />
                               </div>
                             </Carousel.Item>
                           ))
                       ) : (
                         <Carousel.Item className="h-100">
-                           <div className="d-flex justify-content-center align-items-center w-100" style={{ height: '400px' }}>
+                           <div className="d-flex justify-content-center align-items-center w-100 h-100">
                              <div className="text-muted bg-light rounded-circle d-flex align-items-center justify-content-center" style={{width: 200, height: 200}}>
                                 <FaTshirt size={80} className="opacity-25"/>
                              </div>
@@ -141,62 +138,8 @@ export default function HomeView({ products, stats, sizeStatsTotal }: HomeViewPr
       </section>
 
       <Container className="pb-5">
-        
-        {/* Product Carousel Section */}
-        <Row className="justify-content-center mb-5 mt-2">
-            <Col xl={10}>
-              <div className="product-carousel-wrapper"> 
-                <Carousel controls={true} indicators={products.length > 1} interval={5000} variant="dark" fade={false} className="pb-0 product-carousel-custom carousel-controls-mobile-visible">
-                  {products.map((product) => {
-                      const isMourning = product.type === 'mourning';
-                      const textColor = isMourning ? 'text-dark' : 'text-primary';
-                      const bgColor = isMourning ? 'btn-dark' : 'btn-gradient-primary';
-                      const priceTagBg = isMourning ? '#f0f0f0' : '#ececff';
-                      const priceTagColor = isMourning ? '#333' : '#6f6af8';
 
-                      return (
-                        <Carousel.Item key={product._id}>
-                          <div 
-                            className="bg-white rounded-4 p-4 p-lg-5 position-relative" 
-                            style={{ boxShadow: '0 10px 30px rgba(0, 0, 0, 0.1)', margin: '10px' }}
-                          >
-                            <Row className="align-items-center g-5">
-                              <Col md={6} className="text-center">
-                                  <div className="position-relative w-100" style={{height: '350px'}}>
-                                      <SmartImage src={product.imageUrl} alt={product.name} type="product" />
-                                  </div>
-                              </Col>
-                              <Col md={6}>
-                                  <h2 className={`fw-bold mb-3 ${textColor}`}>{product.name}</h2>
-                                  <p className="text-secondary mb-4 line-clamp-3" style={{lineHeight: '1.7', fontSize: '1rem', minHeight: '60px'}}>
-                                      {product.description || "-"}
-                                  </p>
-                                  <div className="d-flex flex-wrap gap-3 mb-4">
-                                    <div className="px-3 py-2 rounded-3 d-flex align-items-center gap-2 fw-bold" style={{backgroundColor: priceTagBg, color: priceTagColor}}>
-                                        <FaTag /> <span>ราคา {product.price.toLocaleString()} บาท</span>
-                                    </div>
-                                    <div className="px-3 py-2 rounded-3 d-flex align-items-center gap-2 fw-bold" style={{backgroundColor: '#e6f8ed', color: '#059669'}}>
-                                        <FaTruck /> <span>ค่าส่งเริ่มต้น 50.-</span>
-                                    </div>
-                                  </div>
-                                  <Link href={`/products?selected=${product._id}`} 
-                                    className={`btn ${bgColor} text-white w-100 py-3 fs-5 shadow-lg d-inline-flex justify-content-center align-items-center text-decoration-none rounded-4 hover-lift`} 
-                                    style={{transition: 'all 0.3s ease'}}>
-                                    <FaShoppingCart className="me-2"/> สั่งซื้อทันที
-                                  </Link>
-                              </Col>
-                            </Row>
-                          </div>
-                        </Carousel.Item>
-                      );
-                  })}
-                  {products.length === 0 && <div className="text-center py-5 bg-white rounded-4">กำลังโหลดข้อมูลสินค้า...</div>}
-                </Carousel>
-              </div>
-            </Col>
-        </Row>
-
-        <div className="mb-4">
+        <div className="mb-4 mt-4">
            <Card className="shadow-sm rounded-4 overflow-hidden card-border-purple">
              <div className="card-header-gradient-purple p-3 px-4">
                 <h5 className="fw-bold mb-0 text-white d-flex align-items-center"><FaChartPie className="me-2"/> ภาพรวมยอดจำหน่าย (Real-time)</h5>
@@ -205,12 +148,9 @@ export default function HomeView({ products, stats, sizeStatsTotal }: HomeViewPr
                 <Row className="g-4">
                    <Col lg={6}>
                       <div className="p-4 h-100 rounded-4 border border-2 border-primary bg-primary bg-opacity-10 d-flex flex-column justify-content-center align-items-center text-center position-relative overflow-hidden">
-                         <div className="position-absolute top-0 end-0 opacity-10 p-3">
-                            <FaChartLine size={80} />
-                         </div>
-                         <h6 className="text-primary fw-bold mb-2 z-1">ยอดจำหน่ายรวมทั้งหมด</h6>
-                         <h1 className="fw-bold text-dark mb-0 z-1 display-5">฿{stats.overall.revenue.toLocaleString()}</h1>
-                         <p className="text-secondary mb-0 z-1 mt-2">
+                         <h6 className="text-primary fw-bold mb-2">ยอดจำหน่ายรวมทั้งหมด</h6>
+                         <h1 className="fw-bold text-dark mb-0 display-5">฿{stats.overall.revenue.toLocaleString()}</h1>
+                         <p className="text-secondary mb-0 mt-2">
                             จำหน่ายไปแล้ว <span className="fw-bold text-primary">{stats.overall.itemsSold.toLocaleString()}</span> ตัว
                          </p>
                       </div>
@@ -224,13 +164,13 @@ export default function HomeView({ products, stats, sizeStatsTotal }: HomeViewPr
                          </div>
                          
                          <h6 className="text-secondary fw-bold mb-3 position-relative z-1">
-                            <span className="badge bg-warning text-dark me-2">Best Seller</span> สินค้าขายดีอันดับ 1
+                            สินค้าขายดีอันดับ 1
                          </h6>
 
                          {stats.bestSeller ? (
                              <div className="d-flex align-items-center position-relative z-1">
-                                <div className="rounded-3 overflow-hidden border me-3 bg-light flex-shrink-0" style={{width: 80, height: 80}}>
-                                    <Image src={stats.bestSeller.imageUrl} alt="Best" width={80} height={80} style={{objectFit:'cover'}} />
+                                <div className="me-3 flex-shrink-0" style={{width: 80, height: 80}}>
+                                    <Image src={stats.bestSeller.imageUrl} alt="Best" width={80} height={80} style={{objectFit:'contain'}} />
                                 </div>
                                 <div>
                                     <h5 className="fw-bold text-dark mb-1">{stats.bestSeller.name}</h5>

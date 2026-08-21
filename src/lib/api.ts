@@ -14,8 +14,10 @@ export const API_ENDPOINTS = {
   // การชำระเงิน
   UPLOAD_SLIP: `${BASE_URL}/payment/upload-slip`,
   
-  // ระบบสมาชิก 
+  // ระบบสมาชิก
   LOGIN: `${BASE_URL}/auth/login`,
+  PROFILE: `${BASE_URL}/auth/profile`,
+  PROFILE_UPLOAD_IMAGE: `${BASE_URL}/auth/profile/upload-image`,
 };
 
 export default API_ENDPOINTS;

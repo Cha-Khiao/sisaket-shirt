@@ -5,24 +5,30 @@ import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Container, Navbar as BSNavbar, Dropdown, Button, Offcanvas, Badge } from 'react-bootstrap';
-import { 
-  FaHistory, FaSignOutAlt, FaSignInAlt, 
+import {
+  FaHistory, FaSignOutAlt, FaSignInAlt, FaUser,
   FaStore, FaHome, FaBars, FaTimes, FaChevronRight,
-  FaShoppingCart, FaUserCircle
+  FaShoppingCart
 } from 'react-icons/fa';
 import { useSession, signOut } from "next-auth/react";
 import { useCart } from '@/context/CartContext';
+import API_ENDPOINTS from '@/lib/api';
+
+const FALLBACK_AVATAR = (seed: string) =>
+  `https://api.dicebear.com/9.x/notionists/svg?seed=${encodeURIComponent(seed)}&backgroundColor=c0aede,d1d4f9,b6e3f4,ffd5dc,ffdfbf`;
 
 export default function Navbar() {
   const pathname = usePathname();
   const { data: session } = useSession();
   const { cartCount } = useCart();
-  
+
   const [scrolled, setScrolled] = useState(false);
   const [showMobile, setShowMobile] = useState(false);
-  
+  const [customImage, setCustomImage] = useState('');
+  const [imgError, setImgError] = useState(false);
+
   const isLoggedIn = !!session;
-  
+
   // @ts-ignore
   const role = session?.user?.role || 'user';
   let displayName = "User";
@@ -30,10 +36,21 @@ export default function Navbar() {
       displayName = session.user.name;
   }
 
-  // Logic รูปโปรไฟล์
-  // 1. ถ้ามีรูปจริง (Google) ให้ใช้รูปนั้น
-  // 2. ถ้าไม่มี (Login เบอร์โทร) ให้เจนรูปการ์ตูนจาก DiceBear โดยใช้เบอร์โทรเป็น Seed
-  const userImage = session?.user?.image || `https://api.dicebear.com/9.x/notionists/svg?seed=${displayName}&backgroundColor=c0aede,d1d4f9,b6e3f4,ffd5dc,ffdfbf`;
+  const userImage = (() => {
+    if (customImage && !imgError) return customImage;
+    if (session?.user?.image && !imgError) return session.user.image;
+    return FALLBACK_AVATAR(displayName);
+  })();
+
+  useEffect(() => {
+    if (!session) return;
+    const accessToken = (session as any)?.accessToken;
+    if (!accessToken) return;
+    fetch(API_ENDPOINTS.PROFILE, { headers: { 'Authorization': `Bearer ${accessToken}` } })
+      .then(res => res.ok ? res.json() : null)
+      .then(data => { if (data?.profileImage) setCustomImage(data.profileImage); })
+      .catch(() => {});
+  }, [session]);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
@@ -41,7 +58,7 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  if (pathname === '/auth/login' || pathname === '/admin/login') return null;
+  if (pathname === '/auth/login') return null;
   const handleClose = () => setShowMobile(false);
 
   return (
@@ -84,21 +101,23 @@ export default function Navbar() {
         .dropdown-item-custom { transition: all 0.2s ease; }
       `}</style>
 
-      <BSNavbar expand="lg" className={`nav-floating py-3 ${scrolled ? 'scrolled' : ''}`}>
-        <Container>
+      <BSNavbar expand="lg" className={`nav-floating py-2 py-lg-3 ${scrolled ? 'scrolled' : ''}`}>
+        <Container className="d-flex align-items-center justify-content-between flex-nowrap">
           {/* Logo */}
-          <BSNavbar.Brand as={Link} href="/" className="d-flex align-items-center gap-2 z-2">
+          <BSNavbar.Brand as={Link} href="/" className="d-flex align-items-center gap-1 gap-lg-2 z-2 me-0 flex-shrink-0">
               <div className="d-flex position-relative">
                  <div className="bg-white rounded-circle p-1 shadow-sm position-relative z-1 border border-light">
-                    <Image src="/images/bee01.png" alt="Logo" width={38} height={38} className="rounded-circle" />
+                    <Image src="/images/bee01.png" alt="Logo" width={30} height={30} className="rounded-circle d-lg-none" />
+                    <Image src="/images/bee01.png" alt="Logo" width={38} height={38} className="rounded-circle d-none d-lg-block" />
                  </div>
-                 <div className="bg-white rounded-circle p-1 shadow-sm position-relative border border-light" style={{marginLeft: '-12px'}}>
-                    <Image src="/images/bee02.png" alt="Logo" width={38} height={38} className="rounded-circle" />
+                 <div className="bg-white rounded-circle p-1 shadow-sm position-relative border border-light" style={{marginLeft: '-10px'}}>
+                    <Image src="/images/bee02.png" alt="Logo" width={30} height={30} className="rounded-circle d-lg-none" />
+                    <Image src="/images/bee02.png" alt="Logo" width={38} height={38} className="rounded-circle d-none d-lg-block" />
                  </div>
               </div>
-              <div className="lh-1 d-flex flex-column ms-2">
-                 <span className="fw-bold text-dark" style={{letterSpacing: '-0.5px', fontSize: '1rem'}}>COMSCI SSKRU</span>
-                 <span className="text-muted small" style={{fontSize: '0.65rem'}}>Sisaket Shirt</span>
+              <div className="lh-1 d-flex flex-column ms-1 ms-lg-2">
+                 <span className="fw-bold text-dark navbar-brand-text" style={{letterSpacing: '-0.5px'}}>COMSCI SSKRU</span>
+                 <span className="text-muted d-none d-sm-block" style={{fontSize: '0.6rem'}}>Sisaket Shirt</span>
               </div>
           </BSNavbar.Brand>
 
@@ -112,9 +131,6 @@ export default function Navbar() {
                  <Link href="/products" className={`nav-link nav-link-custom d-flex align-items-center gap-2 ${pathname.startsWith('/products') ? 'active' : ''}`}>
                     <FaStore size={14} className="mb-1"/> สินค้า
                  </Link>
-                 <Link href="/dashboard" className={`nav-link nav-link-custom d-flex align-items-center gap-2 ${pathname.startsWith('/dashboard') ? 'active' : ''}`}>
-                    <FaHistory size={14} className="mb-1"/> ประวัติ
-                 </Link>
                </div>
              )}
           </div>
@@ -123,7 +139,7 @@ export default function Navbar() {
           <div className="d-flex align-items-center gap-2 z-2 ms-auto">
             
             {isLoggedIn && (
-                <Link href="/cart" className="position-relative btn btn-light rounded-circle shadow-sm me-1 d-none d-lg-flex" style={{width: 42, height: 42, alignItems: 'center', justifyContent: 'center'}}>
+                <Link href="/cart" className="btn-bounce position-relative btn btn-light rounded-circle shadow-sm me-1 d-none d-lg-flex" style={{width: 42, height: 42, alignItems: 'center', justifyContent: 'center'}}>
                     <FaShoppingCart className="text-primary" size={18}/>
                     {cartCount > 0 && (
                         <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger border border-2 border-white" style={{fontSize: '0.6rem'}}>
@@ -134,17 +150,11 @@ export default function Navbar() {
             )}
 
             {isLoggedIn ? (
-              <Dropdown align="end">
+              <Dropdown align="end" className="d-none d-lg-block">
                 <Dropdown.Toggle as="div" className="cursor-pointer" style={{border: 'none', background: 'transparent'}}>
-                   <div className="d-flex align-items-center gap-2 p-1 pe-3 rounded-pill hover-bg-light transition-all border border-transparent hover-border-light">
-                       <div className="position-relative">
-                          <Image src={userImage} alt="Profile" width={38} height={38} className="rounded-circle border shadow-sm" unoptimized />
-                          <span className="position-absolute bottom-0 end-0 bg-success border border-2 border-white rounded-circle" style={{width:10, height:10}}></span>
-                       </div>
-                       <div className="d-none d-md-block text-start lh-1">
-                          <span className="fw-bold text-dark d-block" style={{fontSize: '0.85rem', maxWidth: '80px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis'}}>{displayName}</span>
-                          <span className="text-muted" style={{fontSize: '0.65rem'}}>{role === 'admin' ? 'Admin' : 'Member'}</span>
-                       </div>
+                   <div className="btn-bounce position-relative p-1 rounded-circle">
+                       <Image src={userImage} alt="Profile" width={38} height={38} className="rounded-circle border shadow-sm" style={{objectFit:'cover'}} unoptimized onError={() => setImgError(true)} />
+                       <span className="position-absolute bottom-0 end-0 bg-success border border-2 border-white rounded-circle" style={{width:10, height:10}}></span>
                    </div>
                 </Dropdown.Toggle>
 
@@ -156,7 +166,7 @@ export default function Navbar() {
                         
                         <div className="position-relative z-1">
                             <div className="d-inline-block p-1 bg-white bg-opacity-25 rounded-circle mb-2">
-                                <Image src={userImage} alt="Profile" width={60} height={60} className="rounded-circle border border-2 border-white" unoptimized />
+                                <Image src={userImage} alt="Profile" width={60} height={60} className="rounded-circle border border-2 border-white" style={{objectFit:'cover'}} unoptimized onError={() => setImgError(true)} />
                             </div>
                             <h6 className="fw-bold mb-0">{displayName}</h6>
                             <Badge bg="light" text="dark" className="fw-normal mt-1 opacity-75">{role === 'admin' ? 'Administrator' : 'สมาชิกทั่วไป'}</Badge>
@@ -166,9 +176,20 @@ export default function Navbar() {
                    {/* Body */}
                    <div className="p-3 bg-white">
                        <div className="d-grid gap-2">
+                           <Link href="/profile" className="text-decoration-none">
+                               <button className="btn btn-light w-100 text-start d-flex align-items-center gap-3 py-2 rounded-3 dropdown-item-custom border-0">
+                                   <div className="text-white p-2 rounded-circle shadow-sm" style={{width: 36, height: 36, display: 'flex', alignItems:'center', justifyContent:'center', flexShrink: 0, background: '#10b981'}}>
+                                       <FaUser size={14}/>
+                                   </div>
+                                   <div>
+                                       <span className="d-block fw-bold text-dark" style={{fontSize: '0.9rem'}}>โปรไฟล์</span>
+                                       <small className="text-muted" style={{fontSize: '0.7rem'}}>แก้ไขข้อมูลส่วนตัว</small>
+                                   </div>
+                               </button>
+                           </Link>
                            <Link href="/dashboard" className="text-decoration-none">
                                <button className="btn btn-light w-100 text-start d-flex align-items-center gap-3 py-2 rounded-3 dropdown-item-custom border-0">
-                                   <div className="bg-primary text-white p-2 rounded-circle shadow-sm" style={{width: 35, height: 35, display: 'flex', alignItems:'center', justifyContent:'center'}}>
+                                   <div className="bg-primary text-white p-2 rounded-circle shadow-sm" style={{width: 36, height: 36, display: 'flex', alignItems:'center', justifyContent:'center', flexShrink: 0}}>
                                        <FaHistory size={14}/>
                                    </div>
                                    <div>
@@ -177,21 +198,6 @@ export default function Navbar() {
                                    </div>
                                </button>
                            </Link>
-                           
-                           {/* ปุ่มสำหรับ Admin */}
-                           {role === 'admin' && (
-                               <Link href="/admin/orders" className="text-decoration-none">
-                                   <button className="btn btn-light w-100 text-start d-flex align-items-center gap-3 py-2 rounded-3 dropdown-item-custom border-0">
-                                       <div className="bg-warning text-dark p-2 rounded-circle shadow-sm" style={{width: 35, height: 35, display: 'flex', alignItems:'center', justifyContent:'center'}}>
-                                           <FaUserCircle size={14}/>
-                                       </div>
-                                       <div>
-                                           <span className="d-block fw-bold text-dark" style={{fontSize: '0.9rem'}}>จัดการหลังบ้าน</span>
-                                           <small className="text-muted" style={{fontSize: '0.7rem'}}>Admin Console</small>
-                                       </div>
-                                   </button>
-                               </Link>
-                           )}
                        </div>
 
                        <hr className="my-3 border-secondary opacity-10"/>
@@ -216,11 +222,20 @@ export default function Navbar() {
               </div>
             )}
 
-            {/* Mobile Hamburger */}
-            <Button variant="light" className="d-lg-none rounded-circle p-2 text-secondary bg-light border-0" onClick={() => setShowMobile(true)}>
-               <FaBars size={20}/>
-               {isLoggedIn && cartCount > 0 && <span className="position-absolute top-0 end-0 bg-danger rounded-circle" style={{width: 8, height: 8, marginTop: 8, marginRight: 8}}></span>}
-            </Button>
+            {/* Mobile: Login button or Hamburger */}
+            {isLoggedIn ? (
+              <Button variant="light" className="btn-bounce d-lg-none rounded-circle text-secondary bg-light border-0 d-flex align-items-center justify-content-center position-relative" style={{width: 42, height: 42, padding: 0}} onClick={() => setShowMobile(true)}>
+                 <FaBars size={18}/>
+                 {cartCount > 0 && <span className="position-absolute top-0 end-0 bg-danger rounded-circle" style={{width: 8, height: 8}}></span>}
+              </Button>
+            ) : (
+              <Link href="/auth/login" className="d-lg-none">
+                <Button className="rounded-pill px-3 py-2 fw-bold shadow-sm border-0 btn-gradient-primary d-flex align-items-center gap-2"
+                        style={{background: 'linear-gradient(135deg, #4F46E5 0%, #7c3aed 100%)', fontSize: '0.85rem'}}>
+                   <FaSignInAlt size={14}/> เข้าสู่ระบบ
+                </Button>
+              </Link>
+            )}
 
           </div>
         </Container>
@@ -232,7 +247,7 @@ export default function Navbar() {
           {isLoggedIn ? (
               <div className="d-flex align-items-center gap-3">
                   <div className="bg-white rounded-circle p-1 shadow-sm border">
-                      <Image src={userImage} alt="User" width={40} height={40} className="rounded-circle" unoptimized/>
+                      <Image src={userImage} alt="User" width={40} height={40} className="rounded-circle" style={{objectFit:'cover'}} unoptimized onError={() => setImgError(true)} />
                   </div>
                   <div>
                       <h6 className="fw-bold mb-0 text-dark">{displayName}</h6>
@@ -242,15 +257,20 @@ export default function Navbar() {
           ) : (
               <span className="fw-bold fs-5 text-primary">เมนูหลัก</span>
           )}
-          <Button variant="light" onClick={handleClose} className="rounded-circle p-2 text-secondary bg-white shadow-sm">
-             <FaTimes size={18}/>
+          <Button variant="light" onClick={handleClose} className="btn-bounce rounded-circle text-secondary bg-white shadow-sm d-flex align-items-center justify-content-center" style={{width: 38, height: 38, padding: 0}}>
+             <FaTimes size={16}/>
           </Button>
         </Offcanvas.Header>
         
         <Offcanvas.Body className="px-4 pt-4 d-flex flex-column h-100">
             
-            {isLoggedIn && (
-                <Link href="/cart" onClick={handleClose} className={`mobile-menu-link mb-4 ${pathname === '/cart' ? 'active' : ''}`}>
+           {isLoggedIn ? (
+             <div className="d-flex flex-column gap-2 mb-auto">
+                <Link href="/products" onClick={handleClose} className={`mobile-menu-link ${pathname.startsWith('/products') ? 'active' : ''}`}>
+                   <div className="d-flex align-items-center gap-3"><FaStore className="text-secondary"/> เลือกซื้อสินค้า</div>
+                   <FaChevronRight size={12} className="opacity-25"/>
+                </Link>
+                <Link href="/cart" onClick={handleClose} className={`mobile-menu-link ${pathname === '/cart' ? 'active' : ''}`}>
                     <div className="d-flex align-items-center gap-3">
                         <div className="position-relative">
                             <FaShoppingCart className="text-secondary"/>
@@ -260,18 +280,17 @@ export default function Navbar() {
                     </div>
                     <FaChevronRight size={12} className="opacity-25"/>
                 </Link>
-            )}
-
-           {isLoggedIn ? (
-             <div className="d-flex flex-column gap-2 mb-auto">
-                <Link href="/" onClick={handleClose} className={`mobile-menu-link ${pathname === '/' ? 'active' : ''}`}>
-                   <div className="d-flex align-items-center gap-3"><FaHome className="text-secondary"/> หน้าแรก</div>
-                </Link>
-                <Link href="/products" onClick={handleClose} className={`mobile-menu-link ${pathname.startsWith('/products') ? 'active' : ''}`}>
-                   <div className="d-flex align-items-center gap-3"><FaStore className="text-secondary"/> เลือกซื้อสินค้า</div>
-                </Link>
                 <Link href="/dashboard" onClick={handleClose} className={`mobile-menu-link ${pathname.startsWith('/dashboard') ? 'active' : ''}`}>
                    <div className="d-flex align-items-center gap-3"><FaHistory className="text-secondary"/> ประวัติการสั่งซื้อ</div>
+                   <FaChevronRight size={12} className="opacity-25"/>
+                </Link>
+                <Link href="/" onClick={handleClose} className={`mobile-menu-link ${pathname === '/' ? 'active' : ''}`}>
+                   <div className="d-flex align-items-center gap-3"><FaHome className="text-secondary"/> หน้าแรก</div>
+                   <FaChevronRight size={12} className="opacity-25"/>
+                </Link>
+                <Link href="/profile" onClick={handleClose} className={`mobile-menu-link ${pathname.startsWith('/profile') ? 'active' : ''}`}>
+                   <div className="d-flex align-items-center gap-3"><FaUser className="text-secondary"/> โปรไฟล์</div>
+                   <FaChevronRight size={12} className="opacity-25"/>
                 </Link>
              </div>
            ) : (

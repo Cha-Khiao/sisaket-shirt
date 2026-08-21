@@ -3,13 +3,19 @@ import { NextResponse } from "next/server";
 
 export default withAuth(
   function middleware(req) {
-    // เช็คสิทธิ์ Admin เฉพาะหน้าที่ขึ้นต้นด้วย /admin
+    const token = req.nextauth.token;
+    // @ts-ignore
+    const role = token?.role;
+
     if (req.nextUrl.pathname.startsWith("/admin")) {
-      const token = req.nextauth.token;
-      // @ts-ignore
-      if (token?.role !== "admin") {
-        return NextResponse.redirect(new URL("/", req.url)); 
+      if (role !== "admin") {
+        return NextResponse.redirect(new URL("/", req.url));
       }
+    }
+
+    const userOnlyPaths = ["/dashboard", "/profile", "/cart", "/checkout", "/order", "/orders"];
+    if (role === "admin" && userOnlyPaths.some(p => req.nextUrl.pathname.startsWith(p))) {
+      return NextResponse.redirect(new URL("/admin/orders", req.url));
     }
   },
   {
@@ -21,12 +27,12 @@ export default withAuth(
 
 export const config = {
   matcher: [
-    // 🔒 ฝั่งลูกค้า (ต้อง Login)
     "/dashboard/:path*",
-    "/order/:path*", 
+    "/profile/:path*",
+    "/cart/:path*",
+    "/checkout/:path*",
+    "/order/:path*",
     "/orders/:path*",
-    
-    // ฝั่ง Admin (ระบุเจาะจง เพื่อยกเว้น /admin/login)
     "/admin/orders/:path*",
     "/admin/products/:path*",
     "/admin/stock/:path*",
