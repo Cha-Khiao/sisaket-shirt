@@ -1,5 +1,6 @@
 // BASE_API
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
+const PRODUCTION_API = 'https://sisaket-shirt-api.onrender.com/api';
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL || PRODUCTION_API;
 
 export const API_ENDPOINTS = {
   // สินค้า

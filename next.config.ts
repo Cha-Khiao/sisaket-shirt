@@ -30,10 +30,11 @@ const nextConfig: NextConfig = {
   },
   // ป้องกันปัญหา CORS เวลา dev บางกรณี
   async rewrites() {
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://sisaket-shirt-api.onrender.com/api';
     return [
       {
         source: '/api/backend/:path*',
-        destination: `${process.env.NEXT_PUBLIC_API_URL}/:path*`, 
+        destination: `${apiUrl}/:path*`,
       },
     ];
   },
