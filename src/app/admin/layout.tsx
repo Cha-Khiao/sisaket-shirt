@@ -16,7 +16,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   useEffect(() => {
     if (status === 'loading') return;
-    if (status === 'unauthenticated') router.replace('/admin/login');
+    if (status === 'unauthenticated') router.replace('/auth/login');
     if (status === 'authenticated' && pathname === '/admin') router.replace('/admin/orders');
   }, [status, router, pathname]);
 
@@ -41,7 +41,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 </div>
                 <h3 className="fw-bold text-dark mb-2">Access Denied</h3>
                 <p className="text-muted mb-4">บัญชีของคุณไม่มีสิทธิ์เข้าถึงส่วนจัดการระบบ</p>
-                <Button variant="outline-danger" className="rounded-pill px-4" onClick={() => signOut({ callbackUrl: '/admin/login' })}>
+                <Button variant="outline-danger" className="rounded-pill px-4" onClick={() => signOut({ callbackUrl: '/auth/login' })}>
                     ออกจากระบบ
                 </Button>
             </div>
@@ -119,7 +119,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 variant="outline-danger" 
                 className="w-100 d-flex align-items-center justify-content-center gap-2 py-2 rounded-3 text-white-50 border-secondary border-opacity-25 hover-text-white hover-border-danger"
                 size="sm"
-                onClick={() => signOut({ callbackUrl: '/admin/login' })}
+                onClick={() => signOut({ callbackUrl: '/auth/login' })}
             >
                 <FaSignOutAlt /> Sign Out
             </Button>
@@ -143,7 +143,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                     </Link>
                 ))}
                 <div className="vr bg-white opacity-25"></div>
-                <Button variant="link" className="text-danger p-0" onClick={() => signOut({ callbackUrl: '/admin/login' })}>
+                <Button variant="link" className="text-danger p-0" onClick={() => signOut({ callbackUrl: '/auth/login' })}>
                     <FaSignOutAlt />
                 </Button>
              </div>

@@ -2,7 +2,7 @@
 
 > ระบบ E-Commerce สำหรับจัดการและจำหน่ายเสื้อที่ระลึก พร้อมระบบ Admin ที่ทันสมัย
 
-[![Next.js](https://img.shields.io/badge/Next.js-14-black)](https://nextjs.org/)
+[![Next.js](https://img.shields.io/badge/Next.js-16-black)](https://nextjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue)](https://www.typescriptlang.org/)
 [![Bootstrap](https://img.shields.io/badge/Bootstrap-5.3-purple)](https://getbootstrap.com/)
 [![NextAuth.js](https://img.shields.io/badge/NextAuth.js-4.24-green)](https://next-auth.js.org/)
@@ -33,7 +33,8 @@
 
 ### สำหรับลูกค้า (Customer Portal)
 - ✅ **ระบบสมาชิก** - Login ด้วยเบอร์โทรศัพท์หรือ Google
-- 🛍️ **เลือกซื้อสินค้า** - ระบบตะกร้าสินค้าที่ทันสมัย พร้อม Real-time Stock
+- 👤 **จัดการโปรไฟล์** - แก้ไขชื่อ เบอร์โทร ที่อยู่ รูปโปรไฟล์ และลบบัญชีได้
+- 🛍️ **เลือกซื้อสินค้า** - ระบบตะกร้าสินค้าที่ทันสมัย พร้อม Real-time Stock Indicator
 - 📱 **ตรวจสอบคำสั่งซื้อ** - ติดตามสถานะพัสดุแบบ Real-time
 - 💳 **แจ้งชำระเงิน** - อัปโหลดสลิปง่ายๆ ผ่าน UI ที่สวยงาม
 - 📊 **Dashboard ส่วนตัว** - ดูประวัติการสั่งซื้อและสถิติ
@@ -56,7 +57,7 @@
 ### Frontend
 ```json
 {
-  "framework": "Next.js 14 (App Router)",
+  "framework": "Next.js 16 (App Router + Turbopack)",
   "language": "TypeScript",
   "styling": "Bootstrap 5.3 + Custom CSS",
   "authentication": "NextAuth.js",
@@ -96,9 +97,10 @@ src/
 │   ├── auth/login/                  # Customer Login
 │   │   └── page.tsx
 │   │
-│   ├── cart/page.tsx                # ตะกร้าสินค้า
-│   ├── checkout/page.tsx            # ชำระเงิน
+│   ├── cart/page.tsx                # ตะกร้าสินค้า (Real-time Stock)
+│   ├── checkout/page.tsx            # ยืนยันคำสั่งซื้อ (Profile Pre-fill)
 │   ├── dashboard/page.tsx           # Customer Dashboard
+│   ├── profile/page.tsx             # จัดการโปรไฟล์ + ลบบัญชี
 │   │
 │   ├── orders/                      # ระบบออร์เดอร์
 │   │   ├── details/[id]/page.tsx    # รายละเอียดออร์เดอร์
@@ -113,6 +115,7 @@ src/
 │   └── globals.css                  # Global Styles
 │
 ├── components/                      # Reusable Components
+│   ├── AddressForm.tsx              # Thai Address Form (จังหวัด/อำเภอ/ตำบล)
 │   ├── ClientLayout.tsx             # Layout Wrapper
 │   ├── Navbar.tsx                   # Navigation Bar
 │   ├── Footer.tsx                   # Footer

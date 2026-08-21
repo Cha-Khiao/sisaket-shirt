@@ -41,20 +41,23 @@ export default function DashboardPage() {
          return; // ยังไม่ set loading false รอจนกว่า session จะมา หรือดีดออก
       }
 
-      // @ts-ignore
-      const userPhone = session.user.name; // ใช้ name (ที่เป็นเบอร์โทร) หรือ id ตาม logic ที่เราเก็บ
+      const accessToken = (session as any)?.accessToken;
+      if (!accessToken) {
+        setLoading(false);
+        return;
+      }
 
       try {
-        // แนบ Token ไปกับ Header
-        const res = await fetch(`${API_ENDPOINTS.ORDERS}?phone=${userPhone}`, {
+        const res = await fetch(API_ENDPOINTS.ORDERS, {
             headers: {
-                'Authorization': `Bearer ${(session as any)?.accessToken}`
+                'Authorization': `Bearer ${accessToken}`
             }
         });
-        
+
         if (!res.ok) {
-            // ถ้า 401/403 อาจจะ Token หมดอายุ
-            if (res.status === 401) console.error("Unauthorized");
+            if (res.status === 401 || res.status === 403) {
+              console.error("Token expired or invalid");
+            }
             throw new Error('Failed to fetch orders');
         }
 
@@ -158,7 +161,7 @@ export default function DashboardPage() {
                 <p className="text-secondary ms-1 mb-0 small">จัดการรายการและตรวจสอบสถานะสินค้าของคุณ</p>
             </div>
             <div className="d-flex gap-2">
-                <Link href="/orders/create">
+                <Link href="/products">
                     <Button className="btn-gradient-primary rounded-pill px-4 fw-bold shadow-lg btn-sm d-flex align-items-center py-2">
                         <FaPlus className="me-2"/> สั่งซื้อเพิ่ม
                     </Button>

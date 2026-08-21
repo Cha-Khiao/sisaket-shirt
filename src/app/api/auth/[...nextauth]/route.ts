@@ -15,16 +15,15 @@ export const authOptions: AuthOptions = {
       credentials: {
         identifier: { label: "Identifier", type: "text" },
         password: { label: "Password", type: "password" },
-        isUserLogin: { label: "isUserLogin", type: "text" }
       },
       async authorize(credentials) {
-        const { identifier, password, isUserLogin } = credentials || {};
+        const { identifier, password } = credentials || {};
 
         try {
           const res = await fetch(`${API_URL}/auth/login`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ identifier, password, isUserLogin })
+            body: JSON.stringify({ identifier, password })
           });
 
           const user = await res.json();
@@ -42,7 +41,7 @@ export const authOptions: AuthOptions = {
               accessToken: user.token,
             };
           }
-          
+
           return null;
 
         } catch (error: any) {
@@ -52,26 +51,48 @@ export const authOptions: AuthOptions = {
     })
   ],
   callbacks: {
-    async jwt({ token, user }: any) {
+    async jwt({ token, user, account, profile }: any) {
       if (user) {
         token.id = user.id;
         token.role = user.role;
         token.accessToken = user.accessToken;
       }
+
+      if (account?.provider === 'google') {
+        const email = profile?.email || token?.email;
+        const name = profile?.name || token?.name;
+        if (email) {
+          try {
+            const res = await fetch(`${API_URL}/auth/google-login`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ email, name })
+            });
+            const data = await res.json();
+            if (res.ok && data.token) {
+              token.id = data.id;
+              token.role = data.role;
+              token.accessToken = data.token;
+            }
+          } catch (error) {
+            console.error('Google login backend error:', error);
+          }
+        }
+      }
+
       return token;
     },
     async session({ session, token }: any) {
+      session.accessToken = token.accessToken;
       if (session.user) {
         session.user.id = token.id;
         session.user.role = token.role;
-        // @ts-ignore
-        session.accessToken = token.accessToken;
       }
       return session;
     }
   },
   pages: {
-    signIn: '/auth/login', 
+    signIn: '/auth/login',
   },
   session: { strategy: "jwt", maxAge: 30 * 24 * 60 * 60, },
   secret: process.env.NEXTAUTH_SECRET,

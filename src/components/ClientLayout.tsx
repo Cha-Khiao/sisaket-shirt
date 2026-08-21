@@ -7,12 +7,14 @@ import Footer from '@/components/Footer';
 export default function ClientLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
 
-  const isFullscreenPage = 
-    pathname === '/auth/login' || 
+  const isFullscreenPage =
+    pathname === '/auth/login' ||
     pathname?.startsWith('/admin') ||
     pathname?.includes('/orders/success') ||
     pathname?.includes('/payment/notify') ||
-    pathname?.includes('/orders/details'); 
+    pathname?.includes('/orders/details');
+
+  const hideFooter = pathname === '/cart' || pathname === '/checkout';
 
   if (isFullscreenPage) {
      return <>{children}</>;
@@ -25,7 +27,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
       <main className="flex-grow-1 position-relative z-1" style={{ paddingTop: '50px' }}>
         {children}
       </main>
-      <Footer />
+      {!hideFooter && <Footer />}
     </div>
   );
 }
